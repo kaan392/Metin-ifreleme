@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Force Encryption QR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="qrcode.min.js"></script>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    
+    <div id="qrLoadedMessage" class="qr-message hidden">
+        QR içeriği başarıyla alındı. Lütfen anahtarı girin.
+    </div>
+
+    <div class="container">
+        <!-- CODE PANEL -->
+        <div class="panel">
+            <h2>Code</h2>
+            <textarea id="plainText" placeholder="Metni buraya gir"></textarea>
+            <input id="keyEncrypt" placeholder="Şifreleme anahtarı (key)">
+            <button onclick="encryptMessage()">Şifrele ve QR Oluştur</button>
+            <div id="encryptedOutput" class="output"></div>
+            <div id="qrCode"></div> <!-- QR panelin altında sabit -->
+        </div>
+
+        <!-- DECODE PANEL -->
+        <div class="panel">
+            <h2>Decode</h2>
+            <textarea id="encryptedInput" placeholder="Şifreli metni buraya gir"></textarea>
+            <input id="keyDecrypt" placeholder="Çözme anahtarı (key)">
+            <button onclick="decryptMessage()">Deşifrele</button>
+            <div id="decryptedOutput" class="output"></div>
+        </div>
+    </div>
+
+    <script src="encryption.js"></script>
+    <script>
+        // URL parametrelerinden şifreli metni otomatik al ve decode paneline doldur
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const encrypted = params.get('encrypted');
+            if (encrypted) {
+                document.getElementById('encryptedInput').value = decodeURIComponent(encrypted);
+            }
+        });
+    </script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const encrypted = params.get('encrypted');
+    
+            if (encrypted) {
+                document.getElementById('encryptedInput').value = decodeURIComponent(encrypted);
+    
+                // Bildirimi göster
+                const msg = document.getElementById("qrLoadedMessage");
+                msg.classList.remove("hidden");
+                msg.classList.add("show");
+    
+                // 4 saniye sonra kaldır
+                setTimeout(() => {
+                    msg.classList.remove("show");
+                    msg.classList.add("hidden");
+                }, 4000);
+            }
+        });
+    </script>
+</body>
+</html>
